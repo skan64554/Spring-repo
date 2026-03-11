@@ -17,5 +17,13 @@ public interface ChatDao {
 	int joinChatRoom(ChatRoomJoin join);
 
 	List<ChatMessage> selectChatMessage(ChatRoomJoin join);
+
+	int insertMessage(ChatMessage chatMessage);
+
+	int exitChatRoom(ChatMessage message);
+
+	int countChatRoomMember(ChatMessage message);
+
+	int closeChatRoom(ChatMessage message);
 	
 }

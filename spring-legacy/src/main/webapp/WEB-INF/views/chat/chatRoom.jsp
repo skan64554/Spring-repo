@@ -109,14 +109,26 @@
             <button id="send">보내기</button>
         </div>
     </div>
-    <script
-        src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    
 
     <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>
 
-
-
+	<script>
+		/* 채팅설정을 위한 전역변수들 */
+		const userNo = '${loginUser.userNo}';
+		const userName = '${loginUser.userName}';
+		const chatRoomNo = '${chatRoomNo}';
+		const contextPath = '${contextPath}';
+		
+		// 웹소켓 연결 요청
+		var chattingSocket = new SockJS(contextPath+"/chat");
+		
+		// 스톰프 연결설정
+		var stompClient = Stomp.over(new SockJS(contextPath+"/stomp"));
+	</script>
+	
+	<script src="${contextPath}/resources/js/chat.js"></script>
+	<script src="${contextPath}/resources/js/stomp.js"></script>
 
 
 

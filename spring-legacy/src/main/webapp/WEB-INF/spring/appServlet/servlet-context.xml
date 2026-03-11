@@ -4,7 +4,9 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
@@ -59,9 +61,47 @@
 		 - Websocket을 사용할 수 없는 경우 xhr스트리밍, polling방식을 통해 유사한 기능을 제공
 		 - Websocket/sockjs는 메세지를 실시간으로 송수신 하기 위한 양방향 채널이며 특별한 기능적인 규약은 존재하지 않음
 	 -->
+	 <beans:bean id="chatHandler" class="com.kh.spring.chat.model.websocket.ChatWebSocket" />
+	 <websocket:handlers>
+	 	<!-- 웹소켓 요청을 처리할 수 있는 bean객체 등록 -->
+	 	<websocket:mapping handler="chatHandler" path="/chat"/>
+	 
+	 <!-- 
+	 	첫 웹소켓 연결 요청시 전달되는 HttpSession정보를 WebSocketSession으로 복사해주는 인터셉터
+	  -->
+	  <websocket:handshake-interceptors>
+	  	<beans:bean 
+	  	class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" />
+	  </websocket:handshake-interceptors>
+		 
+	 <websocket:sockjs>
+	 </websocket:sockjs>
+	 
+	 </websocket:handlers>
+	 
 	<!-- 웹소켓 설정 끝 -->
 	
-	
+	<!--
+		STOMP
+		 - WebSocket위에서 동작하는 메시지 프로토콜로 웹소켓을 활용한 복잡한 기능을 구현할 때 사용
+		 - 메시지에 "목적지", "구독", "명령", "헤더", "바디" 등을 추가하여 의미있는 통신을 가능하게 한다
+		 
+		stomp-endpoint
+		 - stomp서버의 연결경로
+		 
+		application-destination-prefix
+		 - 클라이언트가 "서버"로 보낼 메세지의 시작 url을 지정하는 속성
+		 
+		simple-broker
+		 - 클라이언트가 메세지를 받을 구독 경로 
+		 - 
+	 -->
+	<websocket:message-broker application-destination-prefix="/app">
+		<websocket:stomp-endpoint path="/stomp">
+			<websocket:sockjs></websocket:sockjs>
+		</websocket:stomp-endpoint>
+		<websocket:simple-broker prefix="/topic" />
+	</websocket:message-broker>
 	
 	
 	
